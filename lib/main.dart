@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_new
 
 import 'package:doge_coffee/login.dart';
+import 'package:doge_coffee/signUp.dart';
 import 'package:flutter/material.dart';
 
 void main() {

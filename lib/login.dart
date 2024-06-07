@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:doge_coffee/forgetPass.dart';
+import 'package:doge_coffee/signUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -23,7 +25,7 @@ class _LoginState extends State<Login> {
               children: [
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 80),
+                    padding: const EdgeInsets.only(top: 40),
                     child: Container(
                       height: 225,
                       child: Image.asset(
@@ -34,7 +36,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 50, left: 30, right: 30),
+                  padding: const EdgeInsets.only(top: 35, left: 30, right: 30),
                   child: TextFormField(
                     cursorColor: Color.fromRGBO(227, 227, 227, 1.0),
                     style: TextStyle(
@@ -143,7 +145,10 @@ class _LoginState extends State<Login> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          // Handle forget password tap
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ForgetPass()),
+                          );
                         },
                         child: Text(
                           'Forget Password?',
@@ -193,7 +198,7 @@ class _LoginState extends State<Login> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      bottom: 25.0, left: 30.0, right: 30.0),
+                      bottom: 50.0, left: 30.0, right: 30.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -206,7 +211,11 @@ class _LoginState extends State<Login> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          // Action when "Sign up" text is tapped
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUp()),
+                          );
                         },
                         child: Text(
                           "Sign up",
