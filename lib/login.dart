@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:doge_coffee/forgetPass.dart';
+import 'package:doge_coffee/home.dart';
 import 'package:doge_coffee/signUp.dart';
+import 'package:doge_coffee/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -171,11 +173,17 @@ class _LoginState extends State<Login> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Home(),
+                          ),
+                        );
                         // Action when login button is pressed
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromRGBO(39, 39, 39, 1),
+                          cyan,
                         ),
                         side: MaterialStateProperty.all<BorderSide>(
                           BorderSide(
@@ -188,7 +196,7 @@ class _LoginState extends State<Login> {
                         child: Text(
                           'Login',
                           style: TextStyle(
-                            color: Color.fromRGBO(227, 227, 227, 0.75),
+                            color: navyblue,
                             fontSize: 16,
                           ),
                         ),

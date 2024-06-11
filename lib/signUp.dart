@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
 
+import 'package:doge_coffee/home.dart';
 import 'package:doge_coffee/login.dart';
 import 'package:flutter/material.dart';
 
@@ -212,6 +213,12 @@ class _SignUpState extends State<SignUp> {
                       ),
                       child: ElevatedButton(
                         onPressed: () {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Login(),
+                          ),
+                        );
                           // Action when login button is pressed
                         },
                         style: ButtonStyle(

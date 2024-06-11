@@ -2,6 +2,7 @@
 
 import 'package:doge_coffee/login.dart';
 import 'package:doge_coffee/signUp.dart';
+import 'style/colors.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +17,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Doge Coffee',
-      theme: new ThemeData(scaffoldBackgroundColor: Color.fromRGBO(0, 0, 0, 1.0)),
+      // theme: new ThemeData(scaffoldBackgroundColor: Color.fromRGBO(0, 0, 0, 1)),
+      theme: new ThemeData(
+          scaffoldBackgroundColor: navyblue),
       home: const Login(),
     );
   }
