@@ -1,6 +1,10 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:doge_coffee/history.dart';
 import 'package:doge_coffee/profile.dart';
+import 'package:doge_coffee/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -52,9 +56,9 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: currentScreen[_index],
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.white,
-        backgroundColor: Colors.black,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: white,
+        backgroundColor: navyblue,
+        unselectedItemColor: grey,
         showUnselectedLabels: true,
         items: bottomNavigationItems,
         currentIndex: _index,
@@ -76,18 +80,25 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 32,horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              child: Text(
-                "Selamat Pagi,",
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.left,
+            Text(
+              "Selamat datang,",
+              style: TextStyle(
+                fontSize: 16,
+                color: white,
               ),
             ),
-            
+            Text(
+              "KING RAFFF",
+              style: TextStyle(
+                fontSize: 24,
+                color: white,
+                fontWeight: FontWeight.bold,
+              ),
+            )
           ],
         ),
       ),

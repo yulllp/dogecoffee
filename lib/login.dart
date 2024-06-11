@@ -3,6 +3,7 @@ import 'package:doge_coffee/forgetPass.dart';
 import 'package:doge_coffee/home.dart';
 import 'package:doge_coffee/signUp.dart';
 import 'package:doge_coffee/style/colors.dart';
+import 'style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -38,34 +39,34 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 35, left: 30, right: 30),
+                  padding: EdgeInsets.only(top: 35, left: 30, right: 30),
                   child: TextFormField(
                     cursorColor: white,
                     style: TextStyle(
                       color: white,
                       fontSize: 18,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromRGBO(39, 39, 39, 1),
+                      fillColor: lightPurple,
                       labelText: 'Email',
                       labelStyle: TextStyle(
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                       prefixIcon: Icon(
                         Icons.email_outlined,
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                     ),
@@ -75,23 +76,23 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
                   child: TextFormField(
                     obscureText: true,
-                    cursorColor: Color.fromRGBO(205, 115, 115, 1),
+                    cursorColor: white,
                     style: TextStyle(
-                      color: Color.fromRGBO(227, 227, 227, 1.0),
+                      color: white,
                       fontSize: 18,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromRGBO(39, 39, 39, 1),
+                      fillColor: lightPurple,
                       labelText: 'Password',
                       labelStyle: TextStyle(
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                       prefixIcon: Icon(
                         Icons.lock_outline_sharp,
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                       ),
                       // helperText: "*Password length must be more than 4 characters",
                       // helperStyle: TextStyle(
@@ -99,12 +100,12 @@ class _LoginState extends State<Login> {
                       // ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                     ),
@@ -125,20 +126,20 @@ class _LoginState extends State<Login> {
                               });
                             },
                             value: isChecked,
-                            checkColor: Color.fromRGBO(227, 227, 227, 1.0),
+                            checkColor: lightGrey,
                             side: BorderSide(
-                              color: Color.fromRGBO(227, 227, 227, 1.0),
+                              color: lightGrey,
                             ),
                             fillColor: MaterialStateProperty.resolveWith(
                               (states) {
-                                return Color.fromRGBO(39, 39, 39, 1);
+                                return lightPurple;
                               },
                             ),
                           ),
                           Text(
                             "Remember me",
                             style: TextStyle(
-                              color: Color.fromRGBO(227, 227, 227, 0.75),
+                              color: lightGrey,
                               fontSize: 16,
                             ),
                             textAlign: TextAlign.start,
@@ -149,13 +150,14 @@ class _LoginState extends State<Login> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const ForgetPass()),
+                            MaterialPageRoute(
+                                builder: (context) => const ForgetPass()),
                           );
                         },
                         child: Text(
                           'Forget Password?',
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: royalBlue,
                             fontSize: 16,
                           ),
                         ),
@@ -187,7 +189,7 @@ class _LoginState extends State<Login> {
                         ),
                         side: MaterialStateProperty.all<BorderSide>(
                           BorderSide(
-                            color: Color.fromRGBO(227, 227, 227, 1.0),
+                            color: navyblue,
                           ),
                         ),
                       ),
@@ -213,7 +215,7 @@ class _LoginState extends State<Login> {
                       Text(
                         "Don't have an account? ",
                         style: TextStyle(
-                          color: Color.fromRGBO(227, 227, 227, 0.75),
+                          color: lightGrey,
                           fontSize: 16,
                         ),
                       ),
@@ -228,7 +230,7 @@ class _LoginState extends State<Login> {
                         child: Text(
                           "Sign up",
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: royalBlue,
                             fontSize: 16,
                           ),
                         ),

@@ -2,7 +2,9 @@
 
 import 'package:doge_coffee/home.dart';
 import 'package:doge_coffee/login.dart';
+import 'package:doge_coffee/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -18,7 +20,7 @@ class _SignUpState extends State<SignUp> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40),
         child: AppBar(
-          backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+          backgroundColor: navyblue,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(
@@ -27,7 +29,7 @@ class _SignUpState extends State<SignUp> {
               );
             },
             icon: Icon(Icons.arrow_back),
-            color: Color.fromRGBO(227, 227, 227, 1.0),
+            color: lightGrey,
           ),
         ),
       ),
@@ -53,32 +55,32 @@ class _SignUpState extends State<SignUp> {
                 Padding(
                   padding: const EdgeInsets.only(top: 35, left: 30, right: 30),
                   child: TextFormField(
-                    cursorColor: Color.fromRGBO(227, 227, 227, 1.0),
+                    cursorColor: white,
                     style: TextStyle(
-                      color: Color.fromRGBO(227, 227, 227, 1.0),
+                      color: white,
                       fontSize: 18,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromRGBO(39, 39, 39, 1),
+                      fillColor: lightPurple,
                       labelText: 'Name',
                       labelStyle: TextStyle(
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                       prefixIcon: Icon(
                         Icons.person_outline,
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                     ),
@@ -88,36 +90,36 @@ class _SignUpState extends State<SignUp> {
                   padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
                   child: TextFormField(
                     keyboardType: TextInputType.phone,
-                    cursorColor: Color.fromRGBO(205, 115, 115, 1),
+                    cursorColor: white,
                     style: TextStyle(
-                      color: Color.fromRGBO(227, 227, 227, 1.0),
+                      color: white,
                       fontSize: 18,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromRGBO(39, 39, 39, 1),
+                      fillColor: lightPurple,
                       labelText: 'Phone',
                       labelStyle: TextStyle(
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                       prefixIcon: Icon(
                         Icons.phone_outlined,
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                       ),
                       // helperText: "*Password length must be more than 4 characters",
                       // helperStyle: TextStyle(
-                      //   color: Color.fromRGBO(227, 227, 227, 0.75),
+                      //   color: lightGrey,
                       // ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                     ),
@@ -127,36 +129,36 @@ class _SignUpState extends State<SignUp> {
                   padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
                   child: TextFormField(
                     obscureText: true,
-                    cursorColor: Color.fromRGBO(205, 115, 115, 1),
+                    cursorColor: white,
                     style: TextStyle(
-                      color: Color.fromRGBO(227, 227, 227, 1.0),
+                      color: white,
                       fontSize: 18,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromRGBO(39, 39, 39, 1),
+                      fillColor: lightPurple,
                       labelText: 'Email',
                       labelStyle: TextStyle(
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                       prefixIcon: Icon(
                         Icons.email_outlined,
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                       ),
                       // helperText: "*Password length must be more than 4 characters",
                       // helperStyle: TextStyle(
-                      //   color: Color.fromRGBO(227, 227, 227, 0.75),
+                      //   color: lightGrey,
                       // ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                     ),
@@ -166,36 +168,36 @@ class _SignUpState extends State<SignUp> {
                   padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
                   child: TextFormField(
                     obscureText: true,
-                    cursorColor: Color.fromRGBO(205, 115, 115, 1),
+                    cursorColor: white,
                     style: TextStyle(
-                      color: Color.fromRGBO(227, 227, 227, 1.0),
+                      color: white,
                       fontSize: 18,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromRGBO(39, 39, 39, 1),
+                      fillColor: lightPurple,
                       labelText: 'Password',
                       labelStyle: TextStyle(
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                       prefixIcon: Icon(
                         Icons.lock_outline_sharp,
-                        color: Color.fromRGBO(227, 227, 227, 0.75),
+                        color: lightGrey,
                       ),
                       // helperText: "*Password length must be more than 4 characters",
                       // helperStyle: TextStyle(
-                      //   color: Color.fromRGBO(227, 227, 227, 0.75),
+                      //   color: lightGrey,
                       // ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
+                          color: lightGrey,
                         ),
                       ),
                     ),
@@ -223,11 +225,11 @@ class _SignUpState extends State<SignUp> {
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromRGBO(39, 39, 39, 1),
+                            cyan,
                           ),
                           side: MaterialStateProperty.all<BorderSide>(
                             BorderSide(
-                              color: Color.fromRGBO(227, 227, 227, 1.0),
+                              color: navyblue,
                             ),
                           ),
                         ),
@@ -236,7 +238,7 @@ class _SignUpState extends State<SignUp> {
                           child: Text(
                             'Sign Up',
                             style: TextStyle(
-                              color: Color.fromRGBO(227, 227, 227, 0.75),
+                              color: navyblue,
                               fontSize: 16,
                             ),
                           ),
