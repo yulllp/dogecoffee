@@ -1,12 +1,29 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_new
 
 import 'package:doge_coffee/login.dart';
-import 'package:doge_coffee/signUp.dart';
+import 'package:doge_coffee/page/SplashScreen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'style/colors.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
+late SharedPreferences sp;
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeSharedPreferences();
+  // await Firebase.initializeApp(
+  //   name: "",
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  // await initFCM();
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // print(" FCMToken: $fcmToken");
+  runApp(const ProviderScope(child: MyApp()));
+}
+
+
+Future<void> initializeSharedPreferences() async {
+  sp = await SharedPreferences.getInstance();
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +37,7 @@ class MyApp extends StatelessWidget {
       // theme: new ThemeData(scaffoldBackgroundColor: Color.fromRGBO(0, 0, 0, 1)),
       theme: new ThemeData(
           scaffoldBackgroundColor: navyblue),
-      home: const Login(),
+      home: SplashScreenPage(),
     );
   }
 }

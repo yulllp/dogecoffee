@@ -4,7 +4,7 @@ import 'package:doge_coffee/home.dart';
 import 'package:doge_coffee/signUp.dart';
 import 'package:doge_coffee/style/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -40,9 +40,9 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: const EdgeInsets.only(top: 35, left: 30, right: 30),
                   child: TextFormField(
-                    cursorColor: Color.fromRGBO(227, 227, 227, 1.0),
+                    cursorColor: white,
                     style: TextStyle(
-                      color: Color.fromRGBO(227, 227, 227, 1.0),
+                      color: white,
                       fontSize: 18,
                     ),
                     decoration: const InputDecoration(
