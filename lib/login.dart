@@ -6,6 +6,10 @@ import 'package:doge_coffee/style/colors.dart';
 import 'style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:doge_coffee/models/user.dart';
+import 'package:doge_coffee/models/userSignIn.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -16,6 +20,9 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool isChecked = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +48,7 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.only(top: 35, left: 30, right: 30),
                   child: TextFormField(
+                    controller: _emailController,
                     cursorColor: white,
                     style: TextStyle(
                       color: white,
@@ -75,6 +83,7 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
                   child: TextFormField(
+                    controller: _passwordController,
                     obscureText: true,
                     cursorColor: white,
                     style: TextStyle(
@@ -175,13 +184,7 @@ class _LoginState extends State<Login> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Home(),
-                          ),
-                        );
-                        // Action when login button is pressed
+                      _signIn(_emailController.text, _passwordController.text, context);
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -244,5 +247,59 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+}
+
+Future<void> _signIn(
+  String email,
+  String password,
+  BuildContext context,
+) async {
+  const url = "http://10.0.2.2:8000/api/loginAdmin";
+  final uri = Uri.parse(url);
+  final response = await http.post(
+    uri,
+    headers: {
+      'Content-type': 'application/json',
+    },
+    body: json.encode(
+      {
+        'email': email,
+        'password': password,
+      },
+    ),
+  );
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> responseData = json.decode(response.body);
+    final userSignInResult = UserSignInResult.fromJson(responseData);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Home(
+          user: userSignInResult.user!,
+          token: userSignInResult.token, // Access token from the instance
+        ),
+      ),
+    );
+  } else {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              "Failed",
+              style: TextStyle(color: Colors.red),
+            ),
+            content: Text("Email atau password salah!"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("OK"),
+              )
+            ],
+          );
+        });
   }
 }

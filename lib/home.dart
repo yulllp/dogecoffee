@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:doge_coffee/history.dart';
+import 'package:doge_coffee/models/menu.dart';
 import 'package:doge_coffee/profile.dart';
 import 'package:doge_coffee/style/colors.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,9 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:doge_coffee/models/user.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final User user;
+  final String token;
+
+  const Home({super.key, required this.user, required this.token});
 
   @override
   State<Home> createState() => _HomeState();
@@ -18,11 +25,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _index = 0;
-  var screen = [
-    HomePage(),
-    HistoryPage(),
-    ProfilePage(),
-  ];
+  late var screen;
 
   var bottomNavigationIcon = [
     BottomNavigationBarItem(
@@ -52,6 +55,16 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    screen = [
+      HomePage(user: widget.user, token: widget.token),
+      HistoryPage(),
+      ProfilePage(),
+    ];
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bottomNavigationItems = getBottomNavigationItems();
     final currentScreen = getScreen();
@@ -71,59 +84,136 @@ class _HomeState extends State<Home> {
   }
 }
 
+class Product {
+  final String category;
+  final String name;
+  final String image;
+  final String description;
+  final double price;
+
+  Product(
+      {required this.category,
+      required this.name,
+      required this.image,
+      required this.description,
+      required this.price});
+}
+
+class ProductCard extends StatelessWidget {
+  final Menu menus;
+
+  const ProductCard({Key? key, required this.menus}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                  image: Image.network(
+                    'http://10.0.2.2:8000/storage/images/${menus.image}',
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset("assets/bigLogo.png");
+                    },
+                  ).image,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    child: Text(
+                      menus.name!,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 0.0),
+                    child: Text(
+                      menus.description!,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 6.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Rp " +
+                              NumberFormat.decimalPattern('id')
+                                  .format(menus.price!),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.white),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          color: Colors.cyan,
+                          onPressed: () {
+                            // Handle add button pressed
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Divider(
+          color: Colors.white,
+          thickness: 1,
+          height: 0,
+        ),
+      ],
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final User user;
+  final String token;
+
+  const HomePage({super.key, required this.user, required this.token});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> names = [
-    'Best Seller',
-    "Doge Coffee's Signature",
-    'Coffee',
-    'Non-Coffee',
-    'Others'
-  ];
   int selectedindex = 0;
+  int selectedCategoryIndex = 1;
 
-  final List<Map<String, dynamic>> bestSeller = [
-    {
-      "image": "assets/cappuccino_caramelo.png",
-      "name": "Cappuccino Caramelo",
-      "description":
-          "Tren baru menikmati cappuccino ala Fore dengan perpaduan rasa karamel",
-      "price": 29000
-    },
-    {
-      "image": "assets/matcha_strawberry_cream.png",
-      "name": "Matcha Strawberry Cream",
-      "description":
-          "Tren baru menikmati matcha yang menyegarkan dengan krim dan taburan strawberry",
-      "price": 33000
-    },
-    {
-      "image": "assets/vanilla_oat_latte.png",
-      "name": "Vanilla Oat Latte",
-      "description":
-          "Tren baru menikmati oat latte dengan perpaduan drizzle vanilla beans dan susu oat",
-      "price": 39000
-    }
-  ];
-
-  late List<Map<String, dynamic>> dogeCoffeeSignature;
-  late List<Map<String, dynamic>> coffee;
-  late List<Map<String, dynamic>> noncoffee;
-  late List<Map<String, dynamic>> others;
+  List<Menu> menus = [];
+  List<Category> categories = [];
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    dogeCoffeeSignature = List.from(bestSeller);
-    coffee = List.from(bestSeller);
-    noncoffee = List.from(bestSeller);
-    others = List.from(bestSeller);
+    fetchData();
   }
 
   @override
@@ -159,44 +249,45 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     height: 30,
                     child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: names.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedindex = index;
-                              });
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                right: 3,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedindex = index;
+                              selectedCategoryIndex = categories[index].id!;
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: 3,
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 15,
                               ),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: selectedindex == index
-                                      ? cyan
-                                      : lightPurple,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    names[index],
-                                    style: TextStyle(
-                                        color: selectedindex == index
-                                            ? navyblue
-                                            : white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                              decoration: BoxDecoration(
+                                color:
+                                    selectedindex == index ? cyan : lightPurple,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  categories[index].name!,
+                                  style: TextStyle(
+                                      color: selectedindex == index
+                                          ? navyblue
+                                          : white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
-                          );
-                        }),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -209,600 +300,88 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Best Seller
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: categories.map((category) {
+              List<Menu> categoryProducts = menus
+                  .where((menu) => menu.category!.id == category.id)
+                  .toList();
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Best Seller",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: white,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Handle the tap event
-                    },
-                    child: Text(
-                      bestSeller.length.toString() + " items",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: lightGrey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 380,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: bestSeller.length,
-                  itemBuilder: (context, index) {
-                    return Column(
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: AssetImage(bestSeller[index]['image']),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            12.width,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6.0),
-                                    child: Text(
-                                      bestSeller[index]['name'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 0.0),
-                                    child: Text(
-                                      bestSeller[index]['description'],
-                                      style: TextStyle(
-                                        color: lightGrey,
-                                        fontSize: 12,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 6.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Rp " +
-                                              NumberFormat.decimalPattern('id')
-                                                  .format(bestSeller[index]
-                                                      ['price']),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: white),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.add),
-                                          color: cyan,
-                                          onPressed: () {
-                                            // Handle add button pressed
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        Text(
+                          category.name!,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            color: Colors.white,
+                          ),
                         ),
-                        Divider(
-                          color: white,
-                          thickness: 1,
-                          height: 0,
+                        GestureDetector(
+                          onTap: () {
+                            // Handle the tap event
+                          },
+                          child: Text(
+                            "${categoryProducts.length} items",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.lightBlue,
+                            ),
+                          ),
                         ),
                       ],
-                    );
-                  },
-                ),
-              ),
-              // Doge Coffee's Signature
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Doge Coffee's Signature",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: white,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      // Handle the tap event
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: categoryProducts.length,
+                    itemBuilder: (context, index) {
+                      return ProductCard(menus: categoryProducts[index]);
                     },
-                    child: Text(
-                      dogeCoffeeSignature.length.toString() + " items",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: lightGrey,
-                      ),
-                    ),
                   ),
                 ],
-              ),
-              Container(
-                height: 380,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: dogeCoffeeSignature.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      dogeCoffeeSignature[index]['image']),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            12.width,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6.0),
-                                    child: Text(
-                                      dogeCoffeeSignature[index]['name'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 0.0),
-                                    child: Text(
-                                      dogeCoffeeSignature[index]['description'],
-                                      style: TextStyle(
-                                        color: lightGrey,
-                                        fontSize: 12,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 6.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Rp " +
-                                              NumberFormat.decimalPattern('id')
-                                                  .format(
-                                                      dogeCoffeeSignature[index]
-                                                          ['price']),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: white),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.add),
-                                          color: cyan,
-                                          onPressed: () {
-                                            // Handle add button pressed
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          color: white,
-                          thickness: 1,
-                          height: 0,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              // Coffee
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Coffee",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: white,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Handle the tap event
-                    },
-                    child: Text(
-                      coffee.length.toString() + " items",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: lightGrey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 380,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: coffee.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: AssetImage(coffee[index]['image']),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            12.width,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6.0),
-                                    child: Text(
-                                      coffee[index]['name'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 0.0),
-                                    child: Text(
-                                      coffee[index]['description'],
-                                      style: TextStyle(
-                                        color: lightGrey,
-                                        fontSize: 12,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 6.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Rp " +
-                                              NumberFormat.decimalPattern('id')
-                                                  .format(
-                                                      coffee[index]['price']),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: white),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.add),
-                                          color: cyan,
-                                          onPressed: () {
-                                            // Handle add button pressed
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          color: white,
-                          thickness: 1,
-                          height: 0,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              // Noncoffee
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Non-Coffee",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: white,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Handle the tap event
-                    },
-                    child: Text(
-                      noncoffee.length.toString() + " items",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: lightGrey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 380,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: noncoffee.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: AssetImage(noncoffee[index]['image']),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            12.width,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6.0),
-                                    child: Text(
-                                      noncoffee[index]['name'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 0.0),
-                                    child: Text(
-                                      noncoffee[index]['description'],
-                                      style: TextStyle(
-                                        color: lightGrey,
-                                        fontSize: 12,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 6.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Rp " +
-                                              NumberFormat.decimalPattern('id')
-                                                  .format(noncoffee[index]
-                                                      ['price']),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: white),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.add),
-                                          color: cyan,
-                                          onPressed: () {
-                                            // Handle add button pressed
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          color: white,
-                          thickness: 1,
-                          height: 0,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              // Others
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Others",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: white,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Handle the tap event
-                    },
-                    child: Text(
-                      others.length.toString() + " items",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: lightGrey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 380,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: others.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      others[index]['image']),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            12.width,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6.0),
-                                    child: Text(
-                                      others[index]['name'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 0.0),
-                                    child: Text(
-                                      others[index]['description'],
-                                      style: TextStyle(
-                                        color: lightGrey,
-                                        fontSize: 12,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 6.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Rp " +
-                                              NumberFormat.decimalPattern('id')
-                                                  .format(
-                                                      others[index]
-                                                          ['price']),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: white),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.add),
-                                          color: cyan,
-                                          onPressed: () {
-                                            // Handle add button pressed
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          color: white,
-                          thickness: 1,
-                          height: 0,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
+              );
+            }).toList(),
           ),
         ),
       ),
     );
+  }
+
+  void fetchData() async {
+    // debugPrint(widget.token);
+    debugPrint('fetchUsers called');
+    const url = "http://10.0.2.2:8000/api/menu";
+    // const url = "http://0.0.0.0:8000/api/menu";
+    final uri = Uri.parse(url);
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': "Bearer ${widget.token}"
+      },
+    );
+    if (response.statusCode == 200) {
+      final body = response.body;
+      final json = jsonDecode(body);
+
+      setState(() {
+        menus =
+            (json['menu'] as List).map((item) => Menu.fromJson(item)).toList();
+        categories = (json['category'] as List)
+            .map((item) => Category.fromJson(item))
+            .toList();
+      });
+
+      debugPrint("menus: ${menus.toString()}");
+      debugPrint("categories: ${categories.toString()}");
+    } else {
+      debugPrint("error ${response.statusCode}");
+    }
   }
 }
