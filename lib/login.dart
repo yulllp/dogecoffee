@@ -255,7 +255,7 @@ Future<void> _signIn(
   String password,
   BuildContext context,
 ) async {
-  const url = "http://10.0.2.2:8000/api/loginAdmin";
+  const url = "http://10.0.2.2:8000/api/login";
   final uri = Uri.parse(url);
   final response = await http.post(
     uri,

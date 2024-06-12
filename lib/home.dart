@@ -1,17 +1,13 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
-
 import 'package:doge_coffee/history.dart';
-import 'package:doge_coffee/models/menu.dart';
 import 'package:doge_coffee/profile.dart';
-import 'package:doge_coffee/style/colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:doge_coffee/models/user.dart';
+import 'package:doge_coffee/models/menu.dart';
+import 'package:doge_coffee/style/colors.dart';
 
 class Home extends StatefulWidget {
   final User user;
@@ -136,9 +132,10 @@ class ProductCard extends StatelessWidget {
                     child: Text(
                       menus.name!,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.white),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   Padding(
@@ -159,9 +156,7 @@ class ProductCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Rp " +
-                              NumberFormat.decimalPattern('id')
-                                  .format(menus.price!),
+                          "Rp ${NumberFormat.decimalPattern('id').format(menus.price!)}",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -204,16 +199,46 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedindex = 0;
-  int selectedCategoryIndex = 1;
+  // int selectedCategoryIndex = 1;
 
   List<Menu> menus = [];
   List<Category> categories = [];
 
+  late ScrollController _scrollController;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _scrollController = ScrollController();
     fetchData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToCategory(int categoryIndex) {
+    double offset = 0;
+    for (int i = 0; i < categoryIndex; i++) {
+      offset += _getCategoryHeight(categories[i]);
+    }
+    _scrollController.animateTo(
+      offset,
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  double _getCategoryHeight(Category category) {
+    int itemCount =
+        menus.where((menu) => menu.category!.id == category.id).length;
+    // liat di widget inspector
+    double itemHeight = 123;
+    double categoryHeaderHeight = 34;
+    // double appBarHeight = 144;
+    return itemHeight * itemCount + categoryHeaderHeight;
   }
 
   @override
@@ -229,20 +254,36 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Selamat datang,",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: white,
-                  ),
-                ),
-                Text(
-                  "KING RAFFF",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Selamat datang,",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: white,
+                          ),
+                        ),
+                        Text(
+                          widget.user.name!,
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.shopping_cart, color: white),
+                      onPressed: () {
+                        // Handle cart icon press
+                      },
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -256,17 +297,14 @@ class _HomePageState extends State<HomePage> {
                           onTap: () {
                             setState(() {
                               selectedindex = index;
-                              selectedCategoryIndex = categories[index].id!;
+                              // selectedCategoryIndex = categories[index].id!;
+                              _scrollToCategory(index);
                             });
                           },
                           child: Padding(
-                            padding: EdgeInsets.only(
-                              right: 3,
-                            ),
+                            padding: EdgeInsets.only(right: 3),
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 15,
-                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 15),
                               decoration: BoxDecoration(
                                 color:
                                     selectedindex == index ? cyan : lightPurple,
@@ -276,11 +314,12 @@ class _HomePageState extends State<HomePage> {
                                 child: Text(
                                   categories[index].name!,
                                   style: TextStyle(
-                                      color: selectedindex == index
-                                          ? navyblue
-                                          : white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    color: selectedindex == index
+                                        ? navyblue
+                                        : white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
@@ -296,6 +335,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -354,16 +394,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void fetchData() async {
-    // debugPrint(widget.token);
+    debugPrint("user: ${widget.user.name}");
     debugPrint('fetchUsers called');
     const url = "http://10.0.2.2:8000/api/menu";
-    // const url = "http://0.0.0.0:8000/api/menu";
     final uri = Uri.parse(url);
     final response = await http.get(
       uri,
       headers: {
         'Content-type': 'application/json',
-        'Authorization': "Bearer ${widget.token}"
+        'Authorization': "Bearer ${widget.token}",
       },
     );
     if (response.statusCode == 200) {
