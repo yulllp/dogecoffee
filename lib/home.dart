@@ -199,7 +199,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedindex = 0;
-  // int selectedCategoryIndex = 1;
 
   List<Menu> menus = [];
   List<Category> categories = [];
@@ -210,6 +209,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
     fetchData();
   }
 
@@ -219,6 +219,21 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  void _onScroll() {
+    double offset = _scrollController.offset;
+    double currentOffset = 0;
+    for (int i = 0; i < categories.length; i++) {
+      double categoryHeight = _getCategoryHeight(categories[i]);
+      if (offset >= currentOffset && offset < currentOffset + categoryHeight) {
+        setState(() {
+          selectedindex = i;
+        });
+        break;
+      }
+      currentOffset += categoryHeight;
+    }
+  }
+  
   void _scrollToCategory(int categoryIndex) {
     double offset = 0;
     for (int i = 0; i < categoryIndex; i++) {
