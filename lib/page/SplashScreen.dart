@@ -34,23 +34,23 @@ class _SplashScreenPageState extends ConsumerState<SplashScreenPage> {
     });
 
     if (sp.getString("token") != null) {
-      print("Masuk");
+      //   print("Masuk");
 
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: Duration(milliseconds: 1000),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-          pageBuilder: (context, animation, anotherAnimation) {
-            return Home();
-          },
-        ),
-      );
+      //   Navigator.pushReplacement(
+      //     context,
+      //     PageRouteBuilder(
+      //       transitionDuration: Duration(milliseconds: 1000),
+      //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      //         return FadeTransition(
+      //           opacity: animation,
+      //           child: child,
+      //         );
+      //       },
+      //       pageBuilder: (context, animation, anotherAnimation) {
+      //         return Home();
+      //       },
+      //     ),
+      //   );
     } else {
       Navigator.pushReplacement(
         context,
