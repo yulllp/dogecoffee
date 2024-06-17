@@ -21,9 +21,12 @@ Future main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-
 Future<void> initializeSharedPreferences() async {
-  sp = await SharedPreferences.getInstance();
+  try {
+    sp = await SharedPreferences.getInstance();
+  } catch (e) {
+    print('Error initializing SharedPreferences: $e');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -35,8 +38,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Doge Coffee',
       // theme: new ThemeData(scaffoldBackgroundColor: Color.fromRGBO(0, 0, 0, 1)),
-      theme: new ThemeData(
-          scaffoldBackgroundColor: navyblue),
+      theme: new ThemeData(scaffoldBackgroundColor: navyblue),
       home: SplashScreenPage(),
     );
   }
