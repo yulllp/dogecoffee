@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:doge_coffee/forgetPass.dart';
 import 'package:doge_coffee/home.dart';
+import 'package:doge_coffee/main.dart';
 import 'package:doge_coffee/signUp.dart';
 import 'package:doge_coffee/style/colors.dart';
 import 'style/colors.dart';
@@ -184,7 +185,8 @@ class _LoginState extends State<Login> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                      _signIn(_emailController.text, _passwordController.text, context);
+                        _signIn(_emailController.text, _passwordController.text,
+                            context);
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -272,13 +274,16 @@ Future<void> _signIn(
   if (response.statusCode == 200) {
     final Map<String, dynamic> responseData = json.decode(response.body);
     final userSignInResult = UserSignInResult.fromJson(responseData);
+    await sp.setString("token", userSignInResult.token);
+    await sp.setString("user", userSignInResult.user.toString());
+    print("Token: ${sp.getString('token')}");
+    String userJson = jsonEncode(userSignInResult.user);
+    await sp.setString('user', userJson);
+    print("User: ${sp.getString('user')}");
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Home(
-          user: userSignInResult.user!,
-          token: userSignInResult.token, // Access token from the instance
-        ),
+        builder: (context) => Home(),
       ),
     );
   } else {

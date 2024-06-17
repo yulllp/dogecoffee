@@ -1,4 +1,7 @@
+import 'package:doge_coffee/cart.dart';
 import 'package:doge_coffee/history.dart';
+import 'package:doge_coffee/main.dart';
+import 'package:doge_coffee/models/cart.dart';
 import 'package:doge_coffee/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -10,10 +13,7 @@ import 'package:doge_coffee/models/menu.dart';
 import 'package:doge_coffee/style/colors.dart';
 
 class Home extends StatefulWidget {
-  final User user;
-  final String token;
-
-  const Home({super.key, required this.user, required this.token});
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     screen = [
-      HomePage(user: widget.user, token: widget.token),
+      HomePage(),
       HistoryPage(),
       ProfilePage(),
     ];
@@ -188,10 +188,7 @@ class ProductCard extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final User user;
-  final String token;
-
-  const HomePage({super.key, required this.user, required this.token});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -202,12 +199,19 @@ class _HomePageState extends State<HomePage> {
 
   List<Menu> menus = [];
   List<Category> categories = [];
-
+  late Map<String, dynamic> userMap;
+  late String? userJson;
   late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    // User user = sp.getString('user');
+    userJson = sp.getString('user');
+    if (userJson != null) {
+      userMap = jsonDecode(userJson!);
+      debugPrint(userMap['name']);
+    }
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
     fetchData();
@@ -283,7 +287,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          widget.user.name!,
+                          userMap['name'],
                           style: TextStyle(
                             fontSize: 24,
                             color: white,
@@ -295,7 +299,11 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       icon: Icon(Icons.shopping_cart, color: white),
                       onPressed: () {
-                        // Handle cart icon press
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CartPage()),
+                        );
                       },
                     ),
                   ],
@@ -409,7 +417,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void fetchData() async {
-    debugPrint("user: ${widget.user.name}");
     debugPrint('fetchUsers called');
     const url = "http://10.0.2.2:8000/api/menu";
     final uri = Uri.parse(url);
@@ -417,7 +424,7 @@ class _HomePageState extends State<HomePage> {
       uri,
       headers: {
         'Content-type': 'application/json',
-        'Authorization': "Bearer ${widget.token}",
+        'Authorization': "Bearer ${sp.getString('token')}",
       },
     );
     if (response.statusCode == 200) {
