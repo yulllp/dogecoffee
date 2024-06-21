@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doge_coffee/models/user.dart';
 import 'package:doge_coffee/models/menu.dart';
 import 'package:doge_coffee/style/colors.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -138,7 +139,7 @@ class ProductCard extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 ),
                 errorWidget: (context, url, error) => Image.asset(
-                  'assets/images/default_image.jpg',
+                  'assets/bigLogo.png',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
@@ -219,9 +220,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedindex = 0;
+  int _currentSlide = 0;
 
   List<Menu> menus = [];
+  List<Menu> topThreeMenu = [];
   List<Category> categories = [];
+  List<String> imageSliders = [
+    'assets/bigLogo.png',
+    'assets/bigLogo.png',
+    'assets/bigLogo.png'
+  ];
   late Map<String, dynamic> userMap;
   late String? userJson;
   late ScrollController _scrollController;
@@ -238,6 +246,7 @@ class _HomePageState extends State<HomePage> {
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
     fetchData();
+    fetchTopThreeData();
   }
 
   @override
@@ -248,19 +257,22 @@ class _HomePageState extends State<HomePage> {
 
   void _onScroll() {
     double offset = _scrollController.offset;
-    double currentOffset = 0;
+    double accumulatedHeight = 0;
+
     for (int i = 0; i < categories.length; i++) {
-      double categoryHeight = _getCategoryHeight(categories[i]);
-      if (offset >= currentOffset && offset < currentOffset + categoryHeight) {
-        setState(() {
-          selectedindex = i;
-        });
+      accumulatedHeight += _getCategoryHeight(categories[i]);
+
+      if (offset < accumulatedHeight) {
+        if (selectedindex != i) {
+          setState(() {
+            selectedindex = i;
+          });
+        }
         break;
       }
-      currentOffset += categoryHeight;
     }
   }
-  
+
   void _scrollToCategory(int categoryIndex) {
     double offset = 0;
     for (int i = 0; i < categoryIndex; i++) {
@@ -279,15 +291,19 @@ class _HomePageState extends State<HomePage> {
     // liat di widget inspector
     double itemHeight = 123;
     double categoryHeaderHeight = 34;
-    // double appBarHeight = 144;
-    return itemHeight * itemCount + categoryHeaderHeight;
+
+    if (category.name == "Best Seller") {
+      return 287;
+    } else {
+      return itemHeight * itemCount + categoryHeaderHeight;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(120),
+        preferredSize: Size.fromHeight(115),
         child: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -412,7 +428,9 @@ class _HomePageState extends State<HomePage> {
                             // Handle the tap event
                           },
                           child: Text(
-                            "${categoryProducts.length} items",
+                            category.name == "Best Seller"
+                                ? "3 items"
+                                : "${categoryProducts.length} items",
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.lightBlue,
@@ -422,14 +440,83 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: categoryProducts.length,
-                    itemBuilder: (context, index) {
-                      return ProductCard(menus: categoryProducts[index]);
-                    },
-                  ),
+                  8.height,
+                  category.name == "Best Seller"
+                      ? CarouselSlider.builder(
+                          itemCount: topThreeMenu.length,
+                          options: CarouselOptions(
+                            height:
+                                MediaQuery.of(context).size.width * (9 / 16),
+                            aspectRatio: 16 / 9,
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 4),
+                            initialPage: _currentSlide,
+                            viewportFraction: 1.0,
+                            enlargeCenterPage: false,
+                            enableInfiniteScroll: true,
+                            scrollDirection: Axis.horizontal,
+                            pauseAutoPlayOnTouch: true,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _currentSlide = index;
+                              });
+                            },
+                          ),
+                          itemBuilder: (BuildContext context, int itemIndex,
+                              int pageViewIndex) {
+                            return Stack(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  // color: black,
+                                  child: ClipRRect(
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          'http://10.0.2.2:8000/storage/images/${topThreeMenu[itemIndex].image}',
+                                      fit: BoxFit.contain,
+                                      placeholder: (context, url) => Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Image.asset(
+                                        'assets/bigLogo.png',
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 5,
+                                  child: Text(
+                                    "${topThreeMenu[itemIndex].name}",
+                                    style: TextStyle(
+                                      color: white,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 5,
+                                  child: Text(
+                                    "${topThreeMenu[itemIndex].sold} Sold",
+                                    style: TextStyle(
+                                      color: white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: categoryProducts.length,
+                          itemBuilder: (context, index) {
+                            return ProductCard(menus: categoryProducts[index]);
+                          },
+                        ),
                 ],
               );
             }).toList(),
@@ -460,10 +547,36 @@ class _HomePageState extends State<HomePage> {
         categories = (json['category'] as List)
             .map((item) => Category.fromJson(item))
             .toList();
+        categories.insert(0, Category(id: 0, name: "Best Seller"));
       });
 
       debugPrint("menus: ${menus.toString()}");
       debugPrint("categories: ${categories.toString()}");
+    } else {
+      debugPrint("error ${response.statusCode}");
+    }
+  }
+
+  void fetchTopThreeData() async {
+    debugPrint('fetchUsers called');
+    const url = "http://10.0.2.2:8000/api/topThreeMenu";
+    final uri = Uri.parse(url);
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      final body = response.body;
+      final json = jsonDecode(body);
+
+      setState(() {
+        topThreeMenu =
+            (json['menu'] as List).map((item) => Menu.fromJson(item)).toList();
+      });
+
+      debugPrint("menus: ${topThreeMenu.toString()}");
     } else {
       debugPrint("error ${response.statusCode}");
     }

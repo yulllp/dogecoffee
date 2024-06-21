@@ -43,6 +43,7 @@ dependencies:
   url_launcher: ^6.3.0
   webview_flutter: ^4.8.0
   cached_network_image: ^3.3.1
+  carousel_slider: ^4.2.1
 
 
 dev_dependencies:
