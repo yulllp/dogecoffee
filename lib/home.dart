@@ -8,6 +8,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doge_coffee/models/user.dart';
 import 'package:doge_coffee/models/menu.dart';
 import 'package:doge_coffee/style/colors.dart';
@@ -106,18 +107,40 @@ class ProductCard extends StatelessWidget {
       children: [
         Row(
           children: [
+            // Container(
+            //   width: 100,
+            //   height: 100,
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(12),
+            //     image: DecorationImage(
+            //       image: Image.network(
+            //         'http://10.0.2.2:8000/storage/images/${menus.image}',
+            //         errorBuilder: (context, error, stackTrace) {
+            //           return Image.asset("assets/bigLogo.png");
+            //         },
+            //       ).image,
+            //       fit: BoxFit.cover,
+            //     ),
+            //   ),
+            // ),
             Container(
               width: 100,
               height: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(
-                  image: Image.network(
-                    'http://10.0.2.2:8000/storage/images/${menus.image}',
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset("assets/bigLogo.png");
-                    },
-                  ).image,
+              ),
+              child: CachedNetworkImage(
+                imageUrl: 'http://10.0.2.2:8000/storage/images/${menus.image}',
+                width: 50.0,
+                height: 50.0,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => Image.asset(
+                  'assets/images/default_image.jpg',
+                  width: 50.0,
+                  height: 50.0,
                   fit: BoxFit.cover,
                 ),
               ),
