@@ -59,14 +59,15 @@ class _MidtransWebviewState extends ConsumerState<MidtransWebview> {
             });
           },
           onPageStarted: (String url) {
-            debugPrint("urlcheck" + url);
+            debugPrint("urlcheck start" + url);
             setState(() {
               loadingPercentage = 0;
             });
           },
           onPageFinished: (String url) {
-            debugPrint("urlcheck" + url);
+            debugPrint("urlcheck finish" + url);
             if (url.contains('success')) {
+              print("benar");
               updateOrder(widget.order.toString(), 'settlement');
               Navigator.push(
                 context,

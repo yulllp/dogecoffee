@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doge_coffee/main.dart';
 import 'package:doge_coffee/style/colors.dart';
 import 'package:doge_coffee/webView.dart';
@@ -82,15 +83,21 @@ class _CartPageState extends State<CartPage> {
                                 height: 100,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  image: DecorationImage(
-                                    image: Image.network(
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl:
                                       'http://10.0.2.2:8000/storage/images/${menu.image}',
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Image.asset(
-                                            "assets/bigLogo.png");
-                                      },
-                                    ).image,
+                                  width: 50.0,
+                                  height: 50.0,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                    'assets/images/default_image.jpg',
+                                    width: 50.0,
+                                    height: 50.0,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -471,18 +478,19 @@ class _CartPageState extends State<CartPage> {
 
     String url = 'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
+    // try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization':
+            'Basic U0ItTWlkLXNlcnZlci1VZ3hWLXRibUF1eklhN3AzM2ZrbGZOMUU='
+      },
+      body: jsonEncode(requestBody),
+    );
+    print('cek');
     try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization':
-              'Basic U0ItTWlkLXNlcnZlci1VZ3hWLXRibUF1eklhN3AzM2ZrbGZOMUU='
-        },
-        body: jsonEncode(requestBody),
-      );
-
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
         // addToOrder();
@@ -490,7 +498,7 @@ class _CartPageState extends State<CartPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => MidtransWebview(
+            builder: (context) => MidtransWebview(
               url: json['redirect_url'],
               order: id,
             ),
