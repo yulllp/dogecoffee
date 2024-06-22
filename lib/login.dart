@@ -280,7 +280,7 @@ Future<void> _signIn(
     String userJson = jsonEncode(userSignInResult.user);
     await sp.setString('user', userJson);
     print("User: ${sp.getString('user')}");
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => Home(),
