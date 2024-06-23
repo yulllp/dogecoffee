@@ -1,9 +1,13 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:doge_coffee/main.dart';
 import 'package:doge_coffee/models/menu.dart';
 import 'package:doge_coffee/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DetailMenu extends StatefulWidget {
   final Menu menu;
@@ -36,6 +40,14 @@ class _DetailPageState extends State<DetailPage> {
   int quantity = 0;
   int totalPrice = 0;
   String notes = "";
+  final TextEditingController _notescontroller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getInfo(widget.menu.id!);
+  }
 
   void updateQuantity(int change) {
     setState(() {
@@ -43,6 +55,65 @@ class _DetailPageState extends State<DetailPage> {
       if (quantity < 0) quantity = 0;
       totalPrice = quantity * widget.menu!.price!;
     });
+  }
+
+  Future<void> addToCart(int product_id, int count, String note) async {
+    // debugPrint(widget.token);
+    debugPrint('Add to cart called');
+    // const url = "http://10.0.2.2:8000/api/getItemCart";
+    const url = "http://10.0.2.2:8000/api/addToCart";
+    final uri = Uri.parse(url);
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': "Bearer ${sp.getString('token')}"
+      },
+      body:
+          json.encode({"product_id": product_id, 'count': count, 'note': note}),
+    );
+    if (response.statusCode == 200) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                "Success",
+                style: TextStyle(color: Colors.green),
+              ),
+              content: Text("Item berhasil dimasukkan keranjang!"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: Text("OK"),
+                )
+              ],
+            );
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                "Failed",
+                style: TextStyle(color: Colors.red),
+              ),
+              content: Text("Item gagal dimasukkan keranjang!"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("OK"),
+                )
+              ],
+            );
+          });
+    }
   }
 
   @override
@@ -165,15 +236,20 @@ class _DetailPageState extends State<DetailPage> {
                                 height: 10,
                               ),
                               TextField(
+                                controller: _notescontroller,
                                 maxLength: 200,
                                 decoration: InputDecoration(
                                   hintText: 'Example: add more, plz',
                                   labelStyle: TextStyle(color: white),
                                   hintStyle: TextStyle(color: grey),
-                                  prefixIcon: Icon(Icons.description),
+                                  prefixIcon: Icon(
+                                    Icons.description,
+                                    color: white,
+                                  ),
                                   prefixStyle: TextStyle(color: white),
                                   border: OutlineInputBorder(),
                                 ),
+                                style: TextStyle(color: Colors.white),
                                 onChanged: (value) {
                                   setState(() {
                                     notes = value;
@@ -241,6 +317,7 @@ class _DetailPageState extends State<DetailPage> {
                 ElevatedButton(
                   onPressed: () {
                     // Handle add to cart action
+                    addToCart(widget.menu.id!, quantity, _notescontroller.text);
                   },
                   child: Text(
                     'Add to cart - Rp ${NumberFormat.decimalPattern('id').format(totalPrice)}',
@@ -257,5 +334,33 @@ class _DetailPageState extends State<DetailPage> {
         ],
       ),
     );
+  }
+
+  Future<void> getInfo(int id) async {
+    debugPrint('fetchUsers called');
+    final url = "http://10.0.2.2:8000/api/cartInfo/${id}";
+    final uri = Uri.parse(url);
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': "Bearer ${sp.getString('token')}",
+      },
+    );
+    if (response.statusCode == 200) {
+      final body = response.body;
+      final json = jsonDecode(body);
+
+      setState(() {
+        quantity = json['count'];
+        _notescontroller.text = json['note'];
+        totalPrice = json['count'] * widget.menu.price!;
+      });
+
+      // debugPrint("menus: ${menus.toString()}");
+      // debugPrint("categories: ${categories.toString()}");
+    } else {
+      debugPrint("error ${response.statusCode}");
+    }
   }
 }

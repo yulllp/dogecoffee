@@ -108,7 +108,11 @@ class ProductCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => DetailMenu(menu: menus,)));
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailMenu(
+                      menu: menus,
+                    )));
       },
       child: Column(
         children: [
@@ -198,6 +202,12 @@ class ProductCard extends StatelessWidget {
                             color: Colors.cyan,
                             onPressed: () {
                               // Handle add button pressed
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetailMenu(
+                                            menu: menus,
+                                          )));
                             },
                           ),
                         ],
@@ -218,7 +228,6 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -481,7 +490,7 @@ class _HomePageState extends State<HomePage> {
                                   child: ClipRRect(
                                     child: CachedNetworkImage(
                                       imageUrl:
-                                          'http://10.0.2.2:8000/storage/images/${topThreeMenu[0].image}',
+                                          'http://10.0.2.2:8000/storage/images/${topThreeMenu[itemIndex].image}',
                                       fit: BoxFit.contain,
                                       placeholder: (context, url) => Center(
                                         child: CircularProgressIndicator(),
