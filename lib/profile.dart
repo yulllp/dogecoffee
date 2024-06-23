@@ -45,13 +45,27 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(left: 16, right: 16, bottom: 10, top: 5),
+            padding: EdgeInsets.only(left: 0, right: 16, bottom: 10, top: 5),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(
-                      'https://i.pinimg.com/550x/68/08/cd/6808cd4c4e42139d0c60bacf7f6b9114.jpg'),
+                Container(
+                  padding: EdgeInsets.all(8.0), // Adjust padding as needed
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.account_circle,
+                    size: 75, // Adjust the size of the icon as needed
+                    color: Colors.white,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16),

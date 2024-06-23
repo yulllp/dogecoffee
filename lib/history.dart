@@ -149,7 +149,10 @@ class OrderListView extends StatelessWidget {
                               orders[i].status == 'Paid'
                                   ? 'Completed'
                                   : 'Failed',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                  color: orders[i].status == 'Paid'
+                                      ? Colors.white
+                                      : Colors.black),
                             ),
                           ),
                         ],
