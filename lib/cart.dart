@@ -328,26 +328,46 @@ class _CartPageState extends State<CartPage> {
                       ),
                     ),
                     onPressed: () {
-                      payNow();
-                    },
-                    child: totalPrice > 0
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Checkout ',
-                                style: TextStyle(
-                                  color: navyblue, // text color
-                                  fontSize: 16,
+                      if (totalPrice > 0) {
+                        payNow();
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                  "Failed",
+                                  style: TextStyle(color: Colors.red),
                                 ),
-                              ),
-                              Icon(
-                                Icons.arrow_forward,
-                                color: navyblue, // icon color
-                              ),
-                            ],
-                          )
-                        : SizedBox.shrink(),
+                                content: Text("Keranjang anda kosong!"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("OK"),
+                                  )
+                                ],
+                              );
+                            });
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Checkout ',
+                          style: TextStyle(
+                            color: navyblue, // text color
+                            fontSize: 16,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward,
+                          color: navyblue, // icon color
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
