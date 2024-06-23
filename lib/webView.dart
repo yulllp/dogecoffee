@@ -107,7 +107,7 @@ class _MidtransWebviewState extends ConsumerState<MidtransWebview> {
   Future<void> _launchInExternalBrowser(Uri url) async {
     if (!await launchUrl(
       url,
-      mode: LaunchMode.inAppWebView,
+      mode: LaunchMode.externalApplication,
     )) {
       throw 'Could not launch $url';
     }
