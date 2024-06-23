@@ -47,7 +47,7 @@ class _SplashScreenPageState extends ConsumerState<SplashScreenPage> {
             );
           },
           pageBuilder: (context, animation, anotherAnimation) {
-            return Home();
+            return Login();
           },
         ),
       );
