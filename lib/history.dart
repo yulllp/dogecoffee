@@ -42,13 +42,9 @@ class _HistoryPageState extends State<HistoryPage> {
       final json = jsonDecode(body);
 
       setState(() {
-        if (json['orders'] != null) {
-          orders = (json['orders'] as List)
-              .map((item) => Orders.fromJson(item))
-              .toList();
-        } else {
-          orders = [];
-        }
+        orders = (json['orders'] as List)
+            .map((item) => Orders.fromJson(item))
+            .toList();
       });
       debugPrint("orders: ${orders.toString()}");
     } else {
