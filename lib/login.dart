@@ -158,22 +158,6 @@ class _LoginState extends State<Login> {
                           ),
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ForgetPass()),
-                          );
-                        },
-                        child: Text(
-                          'Forget Password?',
-                          style: TextStyle(
-                            color: royalBlue,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
