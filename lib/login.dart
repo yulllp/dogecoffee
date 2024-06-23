@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'dart:ffi';
+
 import 'package:doge_coffee/forgetPass.dart';
 import 'package:doge_coffee/home.dart';
 import 'package:doge_coffee/main.dart';
@@ -186,7 +188,7 @@ class _LoginState extends State<Login> {
                     child: ElevatedButton(
                       onPressed: () {
                         _signIn(_emailController.text, _passwordController.text,
-                            context);
+                            context, isChecked);
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -256,7 +258,10 @@ Future<void> _signIn(
   String email,
   String password,
   BuildContext context,
+  bool isChecked,
 ) async {
+  // print(isChecked);
+  // return;
   const url = "http://10.0.2.2:8000/api/login";
   final uri = Uri.parse(url);
   final response = await http.post(
@@ -274,6 +279,7 @@ Future<void> _signIn(
   if (response.statusCode == 200) {
     final Map<String, dynamic> responseData = json.decode(response.body);
     final userSignInResult = UserSignInResult.fromJson(responseData);
+    await sp.setBool('rememberMe', isChecked);
     await sp.setString("token", userSignInResult.token);
     await sp.setString("user", userSignInResult.user.toString());
     print("Token: ${sp.getString('token')}");

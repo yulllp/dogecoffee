@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doge_coffee/historyDetail.dart';
 import 'package:doge_coffee/main.dart';
 import 'package:doge_coffee/models/order_detail.dart';
 import 'package:doge_coffee/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -92,7 +94,9 @@ class OrderListView extends StatelessWidget {
       itemCount: orders.length,
       itemBuilder: (context, i) {
         return Container(
-          height: 195,
+          constraints: BoxConstraints(
+            maxHeight: 205, // Set the maximum height
+          ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -153,41 +157,54 @@ class OrderListView extends StatelessWidget {
                     ],
                   ),
                   Divider(color: Colors.grey),
-                  Row(
-                    children: [
-                      Image.network(
-                        'https://via.placeholder.com/50',
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                      SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            orders[i].listItem != null &&
-                                    orders[i].listItem!.isNotEmpty
-                                ? orders[i].listItem![0].name ?? ''
-                                : '',
-                            style: TextStyle(color: Colors.white),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Row(
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl:
+                              'http://10.0.2.2:8000/storage/images/${orders[i].listItem![0].image}',
+                          width: 50.0,
+                          height: 50.0,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Center(
+                            child: CircularProgressIndicator(),
                           ),
-                          Text(
-                            orders[i].listItem != null &&
-                                    orders[i].listItem!.isNotEmpty
-                                ? '${orders[i].listItem![0].quantity} products'
-                                : '',
-                            style: TextStyle(color: Colors.white),
+                          errorWidget: (context, url, error) => Image.asset(
+                            'assets/bigLogo.png',
+                            width: 50.0,
+                            height: 50.0,
+                            fit: BoxFit.cover,
                           ),
-                          Text(
-                            orders[i].totalLeft != 0
-                                ? '+${orders[i].totalLeft} other products'
-                                : ' ',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        SizedBox(width: 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              orders[i].listItem != null &&
+                                      orders[i].listItem!.isNotEmpty
+                                  ? orders[i].listItem![0].name ?? ''
+                                  : '',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              orders[i].listItem != null &&
+                                      orders[i].listItem!.isNotEmpty
+                                  ? '${orders[i].listItem![0].quantity} products'
+                                  : '',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              orders[i].totalLeft != 0
+                                  ? '+${orders[i].totalLeft! - 1} other products'
+                                  : ' ',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -197,7 +214,8 @@ class OrderListView extends StatelessWidget {
                         children: [
                           Text('Total Belanja:',
                               style: TextStyle(color: Colors.white)),
-                          Text('Rp ${orders[i].totalPrice ?? ''}',
+                          Text(
+                              'Rp ${NumberFormat.decimalPattern('id').format(orders[i].totalPrice)}',
                               style: TextStyle(color: Colors.white)),
                         ],
                       ),

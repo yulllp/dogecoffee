@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doge_coffee/history.dart';
 import 'package:doge_coffee/models/order_detail.dart';
 import 'package:doge_coffee/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class HistoryDetail extends StatelessWidget {
@@ -48,7 +50,9 @@ class HistoryDetail extends StatelessWidget {
         color: transparentColor, // Customize with your preferred color
         child: Column(
           children: [
-            Divider(color: Colors.grey,),
+            Divider(
+              color: Colors.grey,
+            ),
             SizedBox(
               height: 40,
               child: Container(
@@ -64,7 +68,7 @@ class HistoryDetail extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Rp ${orders[id].totalPrice}', // Function to calculate total price
+                      'Rp ${NumberFormat.decimalPattern('id').format(orders[id].totalPrice)}', // Function to calculate total price
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -192,11 +196,21 @@ class DetailOrderView extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Image.network(
-                              'https://via.placeholder.com/70',
-                              width: 70,
-                              height: 70,
+                            CachedNetworkImage(
+                              imageUrl:
+                                  'http://10.0.2.2:8000/storage/images/${orders[i].listItem![i].image}',
+                              width: 50.0,
+                              height: 50.0,
                               fit: BoxFit.cover,
+                              placeholder: (context, url) => Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              errorWidget: (context, url, error) => Image.asset(
+                                'assets/bigLogo.png',
+                                width: 50.0,
+                                height: 50.0,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 10),
@@ -212,7 +226,7 @@ class DetailOrderView extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    '${orders[id].listItem![i].quantity} x Rp ${orders[id].listItem![i].price}',
+                                    '${orders[id].listItem![i].quantity} x Rp ${NumberFormat.decimalPattern('id').format(orders[id].listItem![i].price)}',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400,
@@ -227,7 +241,7 @@ class DetailOrderView extends StatelessWidget {
                         Column(
                           children: [
                             Text(
-                              'Rp $sub',
+                              'Rp ${NumberFormat.decimalPattern('id').format(sub)}',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
@@ -252,11 +266,21 @@ class DetailOrderView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Image.network(
-                        'https://via.placeholder.com/70',
-                        width: 70,
-                        height: 70,
+                      CachedNetworkImage(
+                        imageUrl:
+                            'http://10.0.2.2:8000/storage/images/${orders[id].listItem![i].image}',
+                        width: 50.0,
+                        height: 50.0,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/bigLogo.png',
+                          width: 50.0,
+                          height: 50.0,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
@@ -272,7 +296,7 @@ class DetailOrderView extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '${orders[id].listItem![i].quantity} x Rp ${orders[id].listItem![i].price}',
+                              '${orders[id].listItem![i].quantity} x Rp ${NumberFormat.decimalPattern('id').format(orders[id].listItem![i].price)}',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
@@ -287,7 +311,7 @@ class DetailOrderView extends StatelessWidget {
                   Column(
                     children: [
                       Text(
-                        'Rp $sub',
+                        'Rp ${NumberFormat.decimalPattern('id').format(sub)}',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

@@ -245,8 +245,8 @@ class _HomePageState extends State<HomePage> {
     }
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-    fetchData();
     fetchTopThreeData();
+    fetchData();
   }
 
   @override
@@ -472,7 +472,7 @@ class _HomePageState extends State<HomePage> {
                                   child: ClipRRect(
                                     child: CachedNetworkImage(
                                       imageUrl:
-                                          'http://10.0.2.2:8000/storage/images/${topThreeMenu[itemIndex].image}',
+                                          'http://10.0.2.2:8000/storage/images/${topThreeMenu[0].image}',
                                       fit: BoxFit.contain,
                                       placeholder: (context, url) => Center(
                                         child: CircularProgressIndicator(),
@@ -488,20 +488,64 @@ class _HomePageState extends State<HomePage> {
                                 Positioned(
                                   bottom: 0,
                                   left: 5,
-                                  child: Text(
-                                    "${topThreeMenu[itemIndex].name}",
-                                    style: TextStyle(
-                                      color: white,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors
+                                          .white, // Set the background color of the container to white
+                                      borderRadius: BorderRadius.circular(
+                                          8.0), // Add border radius
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(
+                                              0.1), // Set shadow color with opacity
+                                          spreadRadius: 2, // Spread radius
+                                          blurRadius: 5, // Blur radius
+                                          offset: Offset(0,
+                                              2), // Offset in x and y direction
+                                        ),
+                                      ],
+                                    ),
+                                    padding: EdgeInsets.all(
+                                        8.0), // Optional: add some padding inside the container
+                                    child: Text(
+                                      "${topThreeMenu[itemIndex].name}", // Text content
+                                      style: TextStyle(
+                                        color: navyblue,
+                                        fontWeight: FontWeight
+                                            .bold, // Set the text color to black
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Positioned(
                                   bottom: 0,
                                   right: 5,
-                                  child: Text(
-                                    "${topThreeMenu[itemIndex].sold} Sold",
-                                    style: TextStyle(
-                                      color: white,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors
+                                          .white, // Set the background color of the container to white
+                                      borderRadius: BorderRadius.circular(
+                                          8.0), // Add border radius
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(
+                                              0.1), // Set shadow color with opacity
+                                          spreadRadius: 2, // Spread radius
+                                          blurRadius: 5, // Blur radius
+                                          offset: Offset(0,
+                                              2), // Offset in x and y direction
+                                        ),
+                                      ],
+                                    ),
+                                    padding: EdgeInsets.all(
+                                        8.0), // Optional: add some padding inside the container
+                                    child: Text(
+                                      "${topThreeMenu[itemIndex].sold} Sold", // Text content
+                                      style: TextStyle(
+                                        color: navyblue,
+                                        fontWeight: FontWeight
+                                            .bold, // Set the text color to black
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -550,15 +594,15 @@ class _HomePageState extends State<HomePage> {
         categories.insert(0, Category(id: 0, name: "Best Seller"));
       });
 
-      debugPrint("menus: ${menus.toString()}");
-      debugPrint("categories: ${categories.toString()}");
+      // debugPrint("menus: ${menus.toString()}");
+      // debugPrint("categories: ${categories.toString()}");
     } else {
       debugPrint("error ${response.statusCode}");
     }
   }
 
   void fetchTopThreeData() async {
-    debugPrint('fetchUsers called');
+    debugPrint('fetch top three called');
     const url = "http://10.0.2.2:8000/api/topThreeMenu";
     final uri = Uri.parse(url);
     final response = await http.get(
@@ -567,16 +611,17 @@ class _HomePageState extends State<HomePage> {
         'Content-type': 'application/json',
       },
     );
+    debugPrint("cek" + response.statusCode.toString());
     if (response.statusCode == 200) {
       final body = response.body;
       final json = jsonDecode(body);
-
+      // print("json " + json.toString());
       setState(() {
         topThreeMenu =
             (json['menu'] as List).map((item) => Menu.fromJson(item)).toList();
       });
 
-      debugPrint("menus: ${topThreeMenu.toString()}");
+      debugPrint("menus top three: ${topThreeMenu[0].image}");
     } else {
       debugPrint("error ${response.statusCode}");
     }

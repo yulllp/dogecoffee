@@ -257,7 +257,12 @@ class _SignUpState extends State<SignUp> {
                         ),
                         child: ElevatedButton(
                           onPressed: () {
-                            _signUp(_nameController.text, _phoneController.text, _emailController.text, _passwordController.text, context);
+                            _signUp(
+                                _nameController.text,
+                                _phoneController.text,
+                                _emailController.text,
+                                _passwordController.text,
+                                context);
                             // Action when login button is pressed
                           },
                           style: ButtonStyle(
@@ -314,7 +319,6 @@ Future<void> _signUp(
         'phone': phone,
         'email': email,
         'password': password,
-        'address': 'tolol'
       },
     ),
   );
@@ -353,7 +357,8 @@ Future<void> _signUp(
               "Failed",
               style: TextStyle(color: Colors.red),
             ),
-            content: Text("Maaf ada kendala, silahkan coba beberapa saat lagi!"),
+            content:
+                Text("Maaf ada kendala, silahkan coba beberapa saat lagi!"),
             actions: [
               TextButton(
                 onPressed: () {

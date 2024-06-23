@@ -25,7 +25,7 @@ class Orders {
   int? orderId;
   String? date;
   String? status;
-  String? totalPrice;
+  int? totalPrice;
   int? totalLeft;
   List<ListItem>? listItem;
 

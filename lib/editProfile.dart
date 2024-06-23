@@ -20,6 +20,7 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _emailController = TextEditingController();
   late Map<String, dynamic> userMap;
   late String? userJson;
+  bool isSubmitting = false;
 
   void initState() {
     userJson = sp.getString('user');
@@ -57,144 +58,149 @@ class _EditProfileState extends State<EditProfile> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 35, left: 30, right: 30),
-                  child: TextFormField(
-                    controller: _nameController,
-                    cursorColor: white,
-                    style: TextStyle(
-                      color: white,
-                      fontSize: 18,
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: lightPurple,
-                      labelText: 'Name',
-                      labelStyle: TextStyle(
-                        color: lightGrey,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      prefixIcon: Icon(
-                        Icons.person_outline,
-                        color: lightGrey,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: lightGrey,
+          isSubmitting // Tampilkan loader jika isLoading true
+              ? Center(child: CircularProgressIndicator())
+              : Expanded(
+                  child: ListView(
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 35, left: 30, right: 30),
+                        child: TextFormField(
+                          controller: _nameController,
+                          cursorColor: white,
+                          style: TextStyle(
+                            color: white,
+                            fontSize: 18,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: lightPurple,
+                            labelText: 'Name',
+                            labelStyle: TextStyle(
+                              color: lightGrey,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.person_outline,
+                              color: lightGrey,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: lightGrey,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: lightGrey,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your name';
+                            }
+                            return null;
+                          },
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: lightGrey,
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 20, left: 30, right: 30),
+                        child: TextFormField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
+                          cursorColor: white,
+                          style: TextStyle(
+                            color: white,
+                            fontSize: 18,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: lightPurple,
+                            labelText: 'Phone',
+                            labelStyle: TextStyle(
+                              color: lightGrey,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.phone_outlined,
+                              color: lightGrey,
+                            ),
+                            // helperText: "*Password length must be more than 4 characters",
+                            // helperStyle: TextStyle(
+                            //   color: lightGrey,
+                            // ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: lightGrey,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: lightGrey,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your phone number';
+                            }
+                            return null;
+                          },
                         ),
                       ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
-                      }
-                      return null;
-                    },
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 20, left: 30, right: 30),
+                        child: TextFormField(
+                          controller: _emailController,
+                          cursorColor: white,
+                          style: TextStyle(
+                            color: white,
+                            fontSize: 18,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: lightPurple,
+                            labelText: 'Email',
+                            labelStyle: TextStyle(
+                              color: lightGrey,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.email_outlined,
+                              color: lightGrey,
+                            ),
+                            // helperText: "*Password length must be more than 4 characters",
+                            // helperStyle: TextStyle(
+                            //   color: lightGrey,
+                            // ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: lightGrey,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: lightGrey,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
-                  child: TextFormField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    cursorColor: white,
-                    style: TextStyle(
-                      color: white,
-                      fontSize: 18,
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: lightPurple,
-                      labelText: 'Phone',
-                      labelStyle: TextStyle(
-                        color: lightGrey,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      prefixIcon: Icon(
-                        Icons.phone_outlined,
-                        color: lightGrey,
-                      ),
-                      // helperText: "*Password length must be more than 4 characters",
-                      // helperStyle: TextStyle(
-                      //   color: lightGrey,
-                      // ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: lightGrey,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: lightGrey,
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
-                  child: TextFormField(
-                    controller: _emailController,
-                    cursorColor: white,
-                    style: TextStyle(
-                      color: white,
-                      fontSize: 18,
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: lightPurple,
-                      labelText: 'Email',
-                      labelStyle: TextStyle(
-                        color: lightGrey,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      prefixIcon: Icon(
-                        Icons.email_outlined,
-                        color: lightGrey,
-                      ),
-                      // helperText: "*Password length must be more than 4 characters",
-                      // helperStyle: TextStyle(
-                      //   color: lightGrey,
-                      // ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: lightGrey,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: lightGrey,
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.only(bottom: 48),
             child: SizedBox(
@@ -251,6 +257,9 @@ class _EditProfileState extends State<EditProfile> {
     String email,
     BuildContext context,
   ) async {
+    setState(() {
+      isSubmitting = true;
+    });
     String url = "http://10.0.2.2:8000/api/saveProfile/$id";
     final uri = Uri.parse(url);
     final response = await http.put(
@@ -274,10 +283,7 @@ class _EditProfileState extends State<EditProfile> {
       await sp.setString("user", userSignInResult.user.toString());
       String userJson = jsonEncode(userSignInResult.user);
       await sp.setString('user', userJson);
-      Navigator.pop(
-        context,
-        true
-      );
+      Navigator.pop(context, true);
       showDialog(
           context: context,
           builder: (BuildContext context) {

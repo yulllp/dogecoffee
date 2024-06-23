@@ -33,9 +33,9 @@ class _SplashScreenPageState extends ConsumerState<SplashScreenPage> {
       isSplash = false;
     });
 
-    if (sp.getString("token") != null) {
-      print("Masuk");
-
+    if (!sp.containsKey('token') | (sp.getBool("rememberMe"))! == false) {
+      print("Login");
+      await sp.clear();
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -52,6 +52,9 @@ class _SplashScreenPageState extends ConsumerState<SplashScreenPage> {
         ),
       );
     } else {
+      print("Home screen");
+      print("Token:" + sp.getString('token')!);
+
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -63,7 +66,7 @@ class _SplashScreenPageState extends ConsumerState<SplashScreenPage> {
             );
           },
           pageBuilder: (context, animation, anotherAnimation) {
-            return Login();
+            return Home();
           },
         ),
       );
