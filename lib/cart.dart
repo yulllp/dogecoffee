@@ -230,7 +230,9 @@ class _CartPageState extends State<CartPage> {
                                                       20, // Adjust size if needed
                                                 ),
                                                 onPressed: () {
-                                                  decrementItem(cartItem.id!);
+                                                  if (cartItem.count! > 1) {
+                                                    decrementItem(cartItem.id!);
+                                                  }
                                                 },
                                               ),
                                             ],
@@ -328,22 +330,24 @@ class _CartPageState extends State<CartPage> {
                     onPressed: () {
                       payNow();
                     },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Checkout ',
-                          style: TextStyle(
-                            color: navyblue, // text color
-                            fontSize: 16,
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward,
-                          color: navyblue, // icon color
-                        ),
-                      ],
-                    ),
+                    child: totalPrice > 0
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Checkout ',
+                                style: TextStyle(
+                                  color: navyblue, // text color
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward,
+                                color: navyblue, // icon color
+                              ),
+                            ],
+                          )
+                        : Container(),
                   )
                 ],
               ),
@@ -394,7 +398,7 @@ class _CartPageState extends State<CartPage> {
       },
       body: json.encode({"total_price": totalPrice}),
     );
-    print(response.body.toString()+"check");
+    print(response.body.toString() + "check");
     final Map<String, dynamic> responseData = json.decode(response.body);
     final order = Orderr.fromJson(responseData);
     return order.order!.id!;
