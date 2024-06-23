@@ -336,7 +336,7 @@ Future<void> _signUp(
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => Login(),
