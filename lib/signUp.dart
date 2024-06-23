@@ -34,7 +34,6 @@ class _SignUpState extends State<SignUp> {
             onPressed: () {
               Navigator.pop(
                 context,
-                MaterialPageRoute(builder: (context) => const Login()),
               );
             },
             icon: Icon(Icons.arrow_back),
@@ -336,6 +335,7 @@ Future<void> _signUp(
             actions: [
               TextButton(
                 onPressed: () {
+                  Navigator.pop(context);
                   Navigator.pop(context);
                 },
                 child: Text("OK"),
