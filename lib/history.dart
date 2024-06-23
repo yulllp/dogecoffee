@@ -196,7 +196,7 @@ class OrderListView extends StatelessWidget {
                             ),
                             Text(
                               orders[i].totalLeft != 0
-                                  ? '+${orders[i].totalLeft! - 1} other products'
+                                  ? '+${orders[i].totalLeft!} other products'
                                   : ' ',
                               style: TextStyle(color: Colors.grey),
                             ),

@@ -95,7 +95,7 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                   errorWidget: (context, url, error) =>
                                       Image.asset(
-                                    'assets/images/default_image.jpg',
+                                    'assets/bigLogo.png',
                                     width: 50.0,
                                     height: 50.0,
                                     fit: BoxFit.cover,
@@ -394,6 +394,7 @@ class _CartPageState extends State<CartPage> {
       },
       body: json.encode({"total_price": totalPrice}),
     );
+    print(response.body.toString()+"check");
     final Map<String, dynamic> responseData = json.decode(response.body);
     final order = Orderr.fromJson(responseData);
     return order.order!.id!;
