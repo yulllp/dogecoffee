@@ -347,7 +347,7 @@ class _CartPageState extends State<CartPage> {
                               ),
                             ],
                           )
-                        : Container(),
+                        : SizedBox.shrink(),
                   )
                 ],
               ),
