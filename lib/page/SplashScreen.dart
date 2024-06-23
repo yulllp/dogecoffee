@@ -33,7 +33,7 @@ class _SplashScreenPageState extends ConsumerState<SplashScreenPage> {
       isSplash = false;
     });
 
-    if (!sp.containsKey('token') | (sp.getBool("rememberMe"))! == false) {
+    if (!sp.containsKey('token')) {
       print("Login");
       await sp.clear();
       Navigator.pushReplacement(
@@ -51,6 +51,47 @@ class _SplashScreenPageState extends ConsumerState<SplashScreenPage> {
           },
         ),
       );
+    } else if (sp.containsKey("rememberMe")) {
+      if (sp.getBool('rememberMe') == false) {
+        print("Login");
+        await sp.clear();
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 1000),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, anotherAnimation) {
+              return Login();
+            },
+          ),
+        );
+      } else {
+        print("Home screen");
+        print("Token:" + sp.getString('token')!);
+
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 1000),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, anotherAnimation) {
+              return Home();
+            },
+          ),
+        );
+      }
     } else {
       print("Home screen");
       print("Token:" + sp.getString('token')!);
