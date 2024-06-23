@@ -1,4 +1,5 @@
 import 'package:doge_coffee/cart.dart';
+import 'package:doge_coffee/detailMenu.dart';
 import 'package:doge_coffee/history.dart';
 import 'package:doge_coffee/main.dart';
 import 'package:doge_coffee/models/cart.dart';
@@ -104,112 +105,120 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            // Container(
-            //   width: 100,
-            //   height: 100,
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(12),
-            //     image: DecorationImage(
-            //       image: Image.network(
-            //         'http://10.0.2.2:8000/storage/images/${menus.image}',
-            //         errorBuilder: (context, error, stackTrace) {
-            //           return Image.asset("assets/bigLogo.png");
-            //         },
-            //       ).image,
-            //       fit: BoxFit.cover,
-            //     ),
-            //   ),
-            // ),
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: CachedNetworkImage(
-                imageUrl: 'http://10.0.2.2:8000/storage/images/${menus.image}',
-                width: 50.0,
-                height: 50.0,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Center(
-                  child: CircularProgressIndicator(),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => DetailMenu(menu: menus,)));
+      },
+      child: Column(
+        children: [
+          Row(
+            children: [
+              // Container(
+              //   width: 100,
+              //   height: 100,
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(12),
+              //     image: DecorationImage(
+              //       image: Image.network(
+              //         'http://10.0.2.2:8000/storage/images/${menus.image}',
+              //         errorBuilder: (context, error, stackTrace) {
+              //           return Image.asset("assets/bigLogo.png");
+              //         },
+              //       ).image,
+              //       fit: BoxFit.cover,
+              //     ),
+              //   ),
+              // ),
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                errorWidget: (context, url, error) => Image.asset(
-                  'assets/bigLogo.png',
+                child: CachedNetworkImage(
+                  imageUrl:
+                      'http://10.0.2.2:8000/storage/images/${menus.image}',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) => Image.asset(
+                    'assets/bigLogo.png',
+                    width: 50.0,
+                    height: 50.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0),
-                    child: Text(
-                      menus.name!,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6.0),
+                      child: Text(
+                        menus.name!,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 0.0),
-                    child: Text(
-                      menus.description!,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
+                    Padding(
+                      padding: EdgeInsets.only(right: 0.0),
+                      child: Text(
+                        menus.description!,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 6.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Rp ${NumberFormat.decimalPattern('id').format(menus.price!)}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.white),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.add),
-                          color: Colors.cyan,
-                          onPressed: () {
-                            // Handle add button pressed
-                          },
-                        ),
-                      ],
+                    Padding(
+                      padding: EdgeInsets.only(top: 6.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Rp ${NumberFormat.decimalPattern('id').format(menus.price!)}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.add),
+                            color: Colors.cyan,
+                            onPressed: () {
+                              // Handle add button pressed
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-        Divider(
-          color: Colors.white,
-          thickness: 1,
-          height: 0,
-        ),
-      ],
+            ],
+          ),
+          Divider(
+            color: Colors.white,
+            thickness: 1,
+            height: 0,
+          ),
+        ],
+      ),
     );
   }
 }
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
