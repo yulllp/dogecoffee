@@ -239,6 +239,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int selectedindex = 0;
   int _currentSlide = 0;
+  bool isAutoScrolling = false;
 
   List<Menu> menus = [];
   List<Menu> topThreeMenu = [];
@@ -274,6 +275,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
+    if (isAutoScrolling) return;
+
     double offset = _scrollController.offset;
     double accumulatedHeight = 0;
 
@@ -296,11 +299,21 @@ class _HomePageState extends State<HomePage> {
     for (int i = 0; i < categoryIndex; i++) {
       offset += _getCategoryHeight(categories[i]);
     }
-    _scrollController.animateTo(
+
+    isAutoScrolling = true; // Disable scroll events
+    _scrollController
+        .animateTo(
       offset,
       duration: Duration(seconds: 1),
       curve: Curves.easeInOut,
-    );
+    )
+        .then((_) {
+      isAutoScrolling = false; // Re-enable scroll events after animation
+    });
+
+    setState(() {
+      selectedindex = categoryIndex;
+    });
   }
 
   double _getCategoryHeight(Category category) {
